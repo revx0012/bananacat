@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Banana Cat</title>
+    <style>
+      #cat {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="cat" src="images/banana_cat.png" alt="Banana Cat">
+
+    <audio id="crySound" loop>
+      <source src="cat_cry.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="happySound" loop>
+      <source src="happy_song.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+      var catElement = document.getElementById("cat");
+      var crySound = document.getElementById("crySound");
+      var happySound = document.getElementById("happySound");
+      var currentState = "normal";
+      var cryingFrames = [
+        "frames/crying_cat_frame1.png",
+        "frames/crying_cat_frame2.png",
+        "frames/crying_cat_frame3.png",
+        "frames/crying_cat_frame4.png",
+        "frames/crying_cat_frame5.png",
+        "frames/crying_cat_frame6.png"
+      ];
+      var currentFrame = 0;
+      var frameRate = 32; // in milliseconds
+      var cryingInterval;
+
+      function playCryingAnimation() {
+        catElement.src = cryingFrames[currentFrame];
+        currentFrame = (currentFrame + 1) % cryingFrames.length;
+      }
+
+      function startCryingAnimation() {
+        cryingInterval = setInterval(playCryingAnimation, frameRate);
+      }
+
+      function stopCryingAnimation() {
+        clearInterval(cryingInterval);
+      }
+
+      catElement.addEventListener("click", function() {
+        if (currentState === "normal") {
+          crySound.play();
+          startCryingAnimation();
+          currentState = "crying";
+        } else if (currentState === "crying") {
+          crySound.pause();
+          crySound.currentTime = 0;
+          stopCryingAnimation();
+          catElement.src = "images/heart_cat.png";
+          happySound.play();
+          currentState = "happy";
+        } else if (currentState === "happy") {
+          happySound.pause();
+          happySound.currentTime = 0;
+          catElement.src = "images/banana_cat.png";
+          currentState = "normal";
+        }
+      });
+    </script>
+  </body>
+</html>
